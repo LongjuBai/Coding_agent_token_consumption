@@ -248,66 +248,6 @@
 
 
 
-
-
-<!-- Results carousel (single-image highlights only) -->
-<section class="hero is-small">
-  <div class="hero-body">
-    <div class="container">
-      <h2 class="title is-3 has-text-centered">Key Results</h2>
-      <p class="has-text-centered is-size-6" style="margin-top:-0.5rem;margin-bottom:1.25rem;">
-        A concise visual tour of our main findings on agent token consumption and predictability.
-      </p>
-
-      <div id="results-carousel" class="carousel results-carousel">
-
-        <!-- Claim 1 -->
-        <div class="item">
-          <img src="static/images/fig1_task_comparison.png" alt="Token consumption across code reasoning, coding chat, and coding agents" loading="lazy"/>
-          <h2 class="subtitle has-text-centered">
-            <strong>Claim 1:</strong> Agentic coding consumes orders-of-magnitude more tokens than code reasoning and coding chat.
-          </h2>
-        </div>
-
-        <!-- Claim 2 (use the most interpretable single panel in carousel; details below in the multi-panel section) -->
-        <div class="item">
-          <img src="static/images/fig2a_model_cost.png" alt="Model-level token cost comparison" loading="lazy"/>
-          <h2 class="subtitle has-text-centered">
-            <strong>Claim 2:</strong> Token costs differ substantially across backbones; the same ordering largely holds on a success-only subset (with lower absolute costs).
-          </h2>
-        </div>
-
-        <!-- Claim 3 (use one panel in carousel; full two-panel view below) -->
-        <div class="item">
-          <img src="static/images/fig3b_accuracy_vs_cost.png" alt="Accuracy by within-problem cost bins (inverse test-time scaling)" loading="lazy"/>
-          <h2 class="subtitle has-text-centered">
-            <strong>Claim 3:</strong> Accuracy peaks at intermediate cost and degrades at higher cost (inverse test-time scaling).
-          </h2>
-        </div>
-
-        <!-- Claim 5 -->
-        <div class="item">
-          <img src="static/images/fig5_difficulty_vs_cost.png" alt="Difficulty labels vs token and tool usage" loading="lazy"/>
-          <h2 class="subtitle has-text-centered">
-            <strong>Claim 5:</strong> Human difficulty labels do not reliably predict model token expenditure.
-          </h2>
-        </div>
-
-        <!-- Claim 6 (use one panel in carousel; full three-panel view below) -->
-        <div class="item">
-          <img src="static/images/fig6b_phase_cost.png" alt="Phase-level cost by token type" loading="lazy"/>
-          <h2 class="subtitle has-text-centered">
-            <strong>Claim 6:</strong> Dominant cost drivers shift across phases: early costs reflect context construction, later costs reflect generation.
-          </h2>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</section>
-<!-- End results carousel -->
-
-
 <!-- Key Findings + multi-panel figures -->
 <section class="section">
   <div class="container is-max-desktop">
@@ -321,6 +261,18 @@
           Compared with code reasoning and coding chat, agentic coding exhibits orders-of-magnitude higher token usage per user input,
           driven primarily by <strong>input tokens</strong>.
         </p>
+
+        <!-- Figure 1 -->
+        <div class="columns is-centered" style="margin-top: 0.75rem;">
+          <div class="column is-10">
+            <figure class="image">
+              <img src="static/images/fig1_task_comparison.png" alt="Token consumption comparison across different coding tasks" loading="lazy">
+            </figure>
+            <p class="has-text-centered is-size-7" style="margin-top: 0.5rem;">
+              <strong>Token consumption across different coding-related tasks.</strong>
+            </p>
+          </div>
+        </div>
       </div>
 
       <div class="box">
@@ -344,7 +296,7 @@
           </div>
         </div>
         <p class="has-text-centered is-size-7">
-          <strong>Figure 2.</strong> Model-dependent cost differences and large variability across problems and runs.
+          <strong>Model-dependent cost differences and large variability across problems and runs.</strong>
         </p>
       </div>
 
@@ -369,7 +321,7 @@
           </div>
         </div>
         <p class="has-text-centered is-size-7">
-          <strong>Figure 3.</strong> Inverse test-time scaling: higher-cost runs are usually less accurate.
+          <strong>Inverse test-time scaling: higher-cost runs are usually less accurate.</strong>
         </p>
       </div>
 
@@ -387,7 +339,7 @@
               <img src="static/images/fig5_difficulty_vs_cost.png" alt="Figure 5: Token and tool usage across difficulty levels" loading="lazy">
             </figure>
             <p class="has-text-centered is-size-7" style="margin-top: 0.5rem;">
-              <strong>Figure 5.</strong> Difficulty labels only weakly align with agent resource expenditure.
+              <strong>Difficulty labels only weakly align with agent resource expenditure.</strong>
             </p>
           </div>
         </div>
@@ -419,7 +371,7 @@
           </div>
         </div>
         <p class="has-text-centered is-size-7">
-          <strong>Figure 6.</strong> Phase-level token usage and cost dynamics across the trajectory.
+          <strong>Phase-level token usage and cost dynamics across the trajectory.</strong>
         </p>
       </div>
 
@@ -471,14 +423,6 @@
 </section>
 
 
-<!-- BibTeX snippet -->
-<pre id="bibtex-code"><code>@article{bai2026tokenconsumption,
-  title   = {How Do Coding Agents Spend Your Money? Analyzing and Predicting Token Consumptions in Agentic Coding Tasks},
-  author  = {Bai, Longju and Huang, Zhemin and Wang, Xingyao and Sun, Jiao and Mihalcea, Rada and Brynjolfsson, Erik and Pentland, Alex and Pei, Jiaxin},
-  journal = {COLM 2026 (under review)},
-  year    = {2026}
-}</code></pre>
-
 
 
 
@@ -495,13 +439,14 @@
           <span class="copy-text">Copy</span>
         </button>
       </div>
-      <pre id="bibtex-code"><code>@article{TokenConsumption2026,
-  title={How Do Coding Agents Spend Your Money? Analyzing and Predicting Token Consumptions in Agentic Coding Tasks},
-  author={Paper Authors},
-  journal={COLM 2026},
-  year={2026},
-  url={https://your-domain.com/your-project-page}
-}</code></pre>
+      <pre id="bibtex-code"><code>@article{bai2026tokenconsumption,
+        title   = {How Do Coding Agents Spend Your Money? Analyzing and Predicting Token Consumptions in Agentic Coding Tasks},
+        author  = {Bai, Longju and Huang, Zhemin and Wang, Xingyao and Sun, Jiao and Mihalcea, Rada and Brynjolfsson, Erik and Pentland, Alex and Pei, Jiaxin},
+        journal = {Preprint},
+        year    = {2026},
+        url     = {https://arxiv.org/abs/<ARXIV_PAPER_ID>}
+      }</code></pre>
+      
     </div>
 </section>
 <!--End BibTex citation -->
