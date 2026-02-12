@@ -121,6 +121,7 @@ function setupVideoCarouselAutoplay() {
 
 // Token Guessing Game
 let csvData = [];
+let predictionsData = [];
 let currentProblem = null;
 let guesses = [];
 
@@ -243,6 +244,39 @@ async function loadCSVData() {
     }
 }
 
+// Load predictions CSV data
+async function loadPredictionsData() {
+    try {
+        const paths = [
+            'all_models_averaged_predictions.csv',
+            '../all_models_averaged_predictions.csv',
+            './all_models_averaged_predictions.csv'
+        ];
+        
+        let response = null;
+        for (const path of paths) {
+            try {
+                response = await fetch(path);
+                if (response.ok) break;
+            } catch (e) {
+                continue;
+            }
+        }
+        
+        if (!response || !response.ok) {
+            console.warn('Predictions CSV not found, AI predictions will not be available');
+            return;
+        }
+        
+        const text = await response.text();
+        predictionsData = parseCSV(text);
+        console.log(`Loaded ${predictionsData.length} prediction records`);
+    } catch (error) {
+        console.error('Error loading predictions CSV:', error);
+        // Don't alert, just log - predictions are optional
+    }
+}
+
 // Get random problem
 function getRandomProblem() {
     if (csvData.length === 0) {
@@ -306,6 +340,136 @@ function displayProblem(problem) {
     document.getElementById('resultsDisplay').style.display = 'none';
 }
 
+// Get AI predictions for a problem
+function getAIPredictions(problemId) {
+    const prediction = predictionsData.find(p => p.problem_id === problemId);
+    if (!prediction) return null;
+    
+    const models = [
+        { 
+            name: 'Claude Sonnet 3.7',
+            predInputKey: 'claude37sonnet_predicted_avg_input',
+            predOutputKey: 'claude37sonnet_predicted_avg_output',
+            predCostKey: 'claude37sonnet_predicted_avg_cost',
+            actualInputKey: 'claude37sonnet_gt_input_token_avg',
+            actualOutputKey: 'claude37sonnet_gt_output_token_avg',
+            actualCostKey: 'claude37sonnet_gt_task_cost_avg'
+        },
+        {
+            name: 'Gemini 3',
+            predInputKey: 'gemini3_predicted_avg_input',
+            predOutputKey: 'gemini3_predicted_avg_output',
+            predCostKey: 'gemini3_predicted_avg_cost',
+            actualInputKey: 'gemini3_gt_input_token_avg',
+            actualOutputKey: 'gemini3_gt_output_token_avg',
+            actualCostKey: 'gemini3_gt_task_cost_avg'
+        },
+        {
+            name: 'GPT-5',
+            predInputKey: 'gpt5_predicted_avg_input',
+            predOutputKey: 'gpt5_predicted_avg_output',
+            predCostKey: 'gpt5_predicted_avg_cost',
+            actualInputKey: 'gpt5_gt_input_token_avg',
+            actualOutputKey: 'gpt5_gt_output_token_avg',
+            actualCostKey: 'gpt5_gt_task_cost_avg'
+        },
+        {
+            name: 'GPT-5.2',
+            predInputKey: 'gpt52_predicted_avg_input',
+            predOutputKey: 'gpt52_predicted_avg_output',
+            predCostKey: 'gpt52_predicted_avg_cost',
+            actualInputKey: 'gpt52_gt_input_token_avg',
+            actualOutputKey: 'gpt52_gt_output_token_avg',
+            actualCostKey: 'gpt52_gt_task_cost_avg'
+        },
+        {
+            name: 'Kimi K2',
+            predInputKey: 'kimik2_predicted_avg_input',
+            predOutputKey: 'kimik2_predicted_avg_output',
+            predCostKey: 'kimik2_predicted_avg_cost',
+            actualInputKey: 'kimik2_gt_input_token_avg',
+            actualOutputKey: 'kimik2_gt_output_token_avg',
+            actualCostKey: 'kimik2_gt_task_cost_avg'
+        },
+        {
+            name: 'Qwen3-Coder',
+            predInputKey: 'qwen3coder_predicted_avg_input',
+            predOutputKey: 'qwen3coder_predicted_avg_output',
+            predCostKey: 'qwen3coder_predicted_avg_cost',
+            actualInputKey: 'qwen3coder_gt_input_token_avg',
+            actualOutputKey: 'qwen3coder_gt_output_token_avg',
+            actualCostKey: 'qwen3coder_gt_task_cost_avg'
+        },
+        {
+            name: 'Sonnet 4.5',
+            predInputKey: 'sonnet45_predicted_avg_input',
+            predOutputKey: 'sonnet45_predicted_avg_output',
+            predCostKey: 'sonnet45_predicted_avg_cost',
+            actualInputKey: 'sonnet45_gt_input_token_avg',
+            actualOutputKey: 'sonnet45_gt_output_token_avg',
+            actualCostKey: 'sonnet45_gt_task_cost_avg'
+        },
+        {
+            name: 'Sonnet 4',
+            predInputKey: 'sonnet4base_predicted_avg_input',
+            predOutputKey: 'sonnet4base_predicted_avg_output',
+            predCostKey: 'sonnet4base_predicted_avg_cost',
+            actualInputKey: 'sonnet4base_gt_input_token_avg',
+            actualOutputKey: 'sonnet4base_gt_output_token_avg',
+            actualCostKey: 'sonnet4base_gt_task_cost_avg'
+        }
+    ];
+    
+    return models.map(model => {
+        const predInput = parseFloat(prediction[model.predInputKey]) || 0;
+        const predOutput = parseFloat(prediction[model.predOutputKey]) || 0;
+        const predTokens = predInput + predOutput;
+        const predCost = parseFloat(prediction[model.predCostKey]) || 0;
+        
+        const actualInput = parseFloat(prediction[model.actualInputKey]) || 0;
+        const actualOutput = parseFloat(prediction[model.actualOutputKey]) || 0;
+        const actualTokens = actualInput + actualOutput;
+        const actualCost = parseFloat(prediction[model.actualCostKey]) || 0;
+        
+        let tokenError = 0;
+        let costError = 0;
+        if (actualTokens > 0) {
+            tokenError = ((Math.abs(predTokens - actualTokens) / actualTokens) * 100).toFixed(1);
+        }
+        if (actualCost > 0) {
+            costError = ((Math.abs(predCost - actualCost) / actualCost) * 100).toFixed(1);
+        }
+        
+        return {
+            name: model.name,
+            predTokens,
+            predCost,
+            actualTokens,
+            actualCost,
+            tokenError: parseFloat(tokenError),
+            costError: parseFloat(costError)
+        };
+    }).filter(m => m.actualTokens > 0 || m.actualCost > 0);
+}
+
+// Count previous guesses for a problem
+function countPreviousGuesses(problemId) {
+    const storedGuesses = JSON.parse(localStorage.getItem('tokenGuesses') || '[]');
+    return storedGuesses.filter(g => g.problemId === problemId).length;
+}
+
+// Calculate percentile ranking (lower error = better)
+// "Top X%" means you're better than (100-X)% of people
+function calculatePercentile(userError, allErrors) {
+    if (allErrors.length === 0) return 50; // Default to middle if no data
+    
+    // Count how many people did worse (higher error)
+    const worseCount = allErrors.filter(e => e > userError).length;
+    // Percentile: percentage of people you beat
+    const percentile = ((worseCount / allErrors.length) * 100).toFixed(1);
+    return Math.max(0, Math.min(100, parseFloat(percentile)));
+}
+
 // Display results
 function displayResults(guessTokens, guessCost) {
     const stats = getAllModelStats(currentProblem);
@@ -313,6 +477,30 @@ function displayResults(guessTokens, guessCost) {
     // Calculate average across all models
     const avgTotalTokens = stats.reduce((sum, m) => sum + m.total, 0) / stats.length;
     const avgCost = stats.reduce((sum, m) => sum + m.cost, 0) / stats.length;
+    
+    // Calculate user's error
+    const userTokenError = avgTotalTokens > 0 ? (Math.abs(guessTokens - avgTotalTokens) / avgTotalTokens) * 100 : 100;
+    const userCostError = avgCost > 0 ? (Math.abs(guessCost - avgCost) / avgCost) * 100 : 100;
+    const userCombinedError = (userTokenError + userCostError) / 2;
+    
+    // Count previous guesses
+    const previousGuesses = countPreviousGuesses(currentProblem.problem_id);
+    document.getElementById('previousGuessesCount').textContent = previousGuesses;
+    
+    // Calculate percentile (simulate with stored guesses)
+    const storedGuesses = JSON.parse(localStorage.getItem('tokenGuesses') || '[]');
+    const allErrors = storedGuesses.map(g => {
+        if (g.actualAvgTokens > 0 && g.actualAvgCost > 0) {
+            const tokenErr = (Math.abs(g.guessTokens - g.actualAvgTokens) / g.actualAvgTokens) * 100;
+            const costErr = (Math.abs(g.guessCost - g.actualAvgCost) / g.actualAvgCost) * 100;
+            return (tokenErr + costErr) / 2;
+        }
+        return 100;
+    });
+    
+    const percentile = calculatePercentile(userCombinedError, allErrors);
+    document.getElementById('userPercentile').textContent = `Top ${percentile}%`;
+    document.getElementById('userGuessSummary').textContent = `${guessTokens.toLocaleString()} tokens, $${guessCost.toFixed(2)}`;
     
     // Show comparison
     const tokenDiff = Math.abs(guessTokens - avgTotalTokens);
@@ -334,7 +522,30 @@ function displayResults(guessTokens, guessCost) {
         Cost: $${guessCost.toFixed(2)} (actual: $${avgCost.toFixed(2)}, difference: ${costPercent}%)
     `;
     
-    // Populate table
+    // Display AI predictions
+    const aiPredictions = getAIPredictions(currentProblem.problem_id);
+    const aiTbody = document.getElementById('aiPredictionsTableBody');
+    aiTbody.innerHTML = '';
+    
+    if (aiPredictions && aiPredictions.length > 0) {
+        aiPredictions.forEach(pred => {
+            const row = document.createElement('tr');
+            const avgError = ((pred.tokenError + pred.costError) / 2).toFixed(1);
+            row.innerHTML = `
+                <td><strong>${pred.name}</strong></td>
+                <td>${pred.predTokens.toLocaleString()}</td>
+                <td>$${pred.predCost.toFixed(4)}</td>
+                <td>${pred.actualTokens.toLocaleString()}</td>
+                <td>$${pred.actualCost.toFixed(4)}</td>
+                <td><strong>${avgError}%</strong></td>
+            `;
+            aiTbody.appendChild(row);
+        });
+    } else {
+        aiTbody.innerHTML = '<tr><td colspan="6" class="has-text-centered">AI predictions not available for this problem</td></tr>';
+    }
+    
+    // Populate actual results table
     const tbody = document.getElementById('resultsTableBody');
     tbody.innerHTML = '';
     
@@ -366,7 +577,7 @@ function displayResults(guessTokens, guessCost) {
 }
 
 // Record guess
-function recordGuess(guess) {
+async function recordGuess(guess) {
     guesses.push(guess);
     
     // Store in localStorage
@@ -375,42 +586,112 @@ function recordGuess(guess) {
     localStorage.setItem('tokenGuesses', JSON.stringify(storedGuesses));
     
     console.log('Guess recorded:', guess);
+    
+    // Save to Google Sheets (optional - won't break if it fails)
+    try {
+        await saveGuessToGoogleSheets(guess);
+    } catch (error) {
+        console.error('Failed to save to Google Sheets:', error);
+        // Don't show error to user, just log it
+    }
+}
+
+// Save guess to Google Sheets via Apps Script
+async function saveGuessToGoogleSheets(guess) {
+    // Google Apps Script web app URL
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwz_G-iDXs31FJojcDwvyuZ0cRk4gn3DstIU0UF62rUeOJKu1lqC_XO1H1NDrQa8AnX/exec';
+    
+    const formData = new FormData();
+    formData.append('problemId', guess.problemId || '');
+    formData.append('guessTokens', guess.guessTokens || '');
+    formData.append('guessCost', guess.guessCost || '');
+    formData.append('actualAvgTokens', guess.actualAvgTokens || '');
+    formData.append('actualAvgCost', guess.actualAvgCost || '');
+    formData.append('timestamp', guess.timestamp || new Date().toISOString());
+    
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        body: formData
+    });
+    
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return await response.text();
 }
 
 // Initialize guessing game
 function initGuessingGame() {
-    loadCSVData();
+    // Check if elements exist
+    const startBtn = document.getElementById('startGame');
+    if (!startBtn) {
+        console.error('Start game button not found');
+        return;
+    }
     
-    document.getElementById('startGame').addEventListener('click', () => {
-        const problem = getRandomProblem();
-        if (problem) {
-            displayProblem(problem);
-        }
-    });
-    
-    document.getElementById('newProblem').addEventListener('click', () => {
-        const problem = getRandomProblem();
-        if (problem) {
-            displayProblem(problem);
-        }
-    });
-    
-    document.getElementById('submitGuess').addEventListener('click', () => {
-        const guessTokens = parseFloat(document.getElementById('guessTokens').value);
-        const guessCost = parseFloat(document.getElementById('guessCost').value);
+    // Load both CSV files
+    Promise.all([loadCSVData(), loadPredictionsData()]).then(() => {
+        console.log('CSV data loaded, setting up event listeners');
         
-        if (isNaN(guessTokens) || isNaN(guessCost) || guessTokens < 0 || guessCost < 0) {
-            alert('Please enter valid numbers for both tokens and cost.');
-            return;
+        // Start game button
+        startBtn.addEventListener('click', () => {
+            console.log('Start game button clicked');
+            const problem = getRandomProblem();
+            if (problem) {
+                displayProblem(problem);
+            } else {
+                alert('No problems available. Please wait for data to load or refresh the page.');
+            }
+        });
+        
+        // New problem button
+        const newProblemBtn = document.getElementById('newProblem');
+        if (newProblemBtn) {
+            newProblemBtn.addEventListener('click', () => {
+                const problem = getRandomProblem();
+                if (problem) {
+                    displayProblem(problem);
+                } else {
+                    alert('No problems available. Please wait for data to load.');
+                }
+            });
         }
         
-        displayResults(guessTokens, guessCost);
-    });
-    
-    document.getElementById('tryAnother').addEventListener('click', () => {
-        const problem = getRandomProblem();
-        if (problem) {
-            displayProblem(problem);
+        // Submit guess button
+        const submitBtn = document.getElementById('submitGuess');
+        if (submitBtn) {
+            submitBtn.addEventListener('click', () => {
+                const guessTokens = parseFloat(document.getElementById('guessTokens').value);
+                const guessCost = parseFloat(document.getElementById('guessCost').value);
+                
+                if (isNaN(guessTokens) || isNaN(guessCost) || guessTokens < 0 || guessCost < 0) {
+                    alert('Please enter valid numbers for both tokens and cost.');
+                    return;
+                }
+                
+                displayResults(guessTokens, guessCost);
+            });
+        }
+        
+        // Try another button
+        const tryAnotherBtn = document.getElementById('tryAnother');
+        if (tryAnotherBtn) {
+            tryAnotherBtn.addEventListener('click', () => {
+                const problem = getRandomProblem();
+                if (problem) {
+                    displayProblem(problem);
+                } else {
+                    alert('No problems available. Please wait for data to load.');
+                }
+            });
+        }
+    }).catch(error => {
+        console.error('Error initializing guessing game:', error);
+        if (startBtn) {
+            startBtn.addEventListener('click', () => {
+                alert('Error loading problem data. Please refresh the page.');
+            });
         }
     });
 }

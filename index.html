@@ -451,7 +451,7 @@
             <div class="field">
               <label class="label">Your Guess: Total Tokens</label>
               <div class="control">
-                <input class="input" type="number" id="guessTokens" placeholder="Enter total tokens" min="0" step="1000">
+                <input class="input" type="number" id="guessTokens" placeholder="Enter total tokens" min="0" step="5000">
               </div>
             </div>
             <div class="field">
@@ -475,10 +475,49 @@
       
       <!-- Results Display -->
       <div id="resultsDisplay" style="display: none;">
-        <h3 class="title is-5">Actual Results</h3>
+        <h3 class="title is-5">Your Results</h3>
+        
+        <!-- User Statistics -->
+        <div class="box" style="background-color: #f5f5f5; margin-bottom: 1.5rem;">
+          <div class="columns">
+            <div class="column">
+              <p class="heading">Previous Guesses</p>
+              <p class="title is-4" id="previousGuessesCount">-</p>
+            </div>
+            <div class="column">
+              <p class="heading">Your Accuracy Rank</p>
+              <p class="title is-4" id="userPercentile">-</p>
+            </div>
+            <div class="column">
+              <p class="heading">Your Guess</p>
+              <p class="title is-6" id="userGuessSummary">-</p>
+            </div>
+          </div>
+        </div>
         
         <div class="notification" id="guessComparison"></div>
         
+        <!-- AI Predictions Comparison -->
+        <h4 class="title is-5" style="margin-top: 2rem;">AI Model Predictions vs. Actual</h4>
+        <div class="table-container" style="overflow-x: auto; margin-bottom: 1.5rem;">
+          <table class="table is-striped is-fullwidth">
+            <thead>
+              <tr>
+                <th>Model</th>
+                <th>Predicted Tokens</th>
+                <th>Predicted Cost ($)</th>
+                <th>Actual Tokens</th>
+                <th>Actual Cost ($)</th>
+                <th>Error %</th>
+              </tr>
+            </thead>
+            <tbody id="aiPredictionsTableBody">
+            </tbody>
+          </table>
+        </div>
+        
+        <!-- Actual Results Table -->
+        <h4 class="title is-5">Actual Results by Model</h4>
         <div class="table-container" style="overflow-x: auto;">
           <table class="table is-striped is-fullwidth">
             <thead>
