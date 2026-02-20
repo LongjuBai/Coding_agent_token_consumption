@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>Token Guessing Game | Coding Agent Token Consumption Analysis</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="static/css/bulma.min.css">
+  <link rel="stylesheet" href="static/css/index.css">
+  <link rel="stylesheet" href="static/css/fontawesome.all.min.css">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- JavaScript -->
+  <script defer src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="static/js/fontawesome.all.min.js"></script>
+  <script defer src="static/js/index.js"></script>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="container">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="index.html">
+          <strong>← Back to Main Page</strong>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <!-- Interactive Token Guessing Game -->
+    <section class="section is-light" id="TokenGuessingGame">
+      <div class="container is-max-desktop">
+        <h2 class="title is-3 has-text-centered">Can You Guess the Token Cost?</h2>
+        <p class="subtitle has-text-centered">Test your intuition about agent token consumption</p>
+        
+        <div class="box" id="guessingGameContainer">
+          <!-- Problem Display -->
+          <div id="problemDisplay" style="display: none;">
+            <h3 class="title is-5">Problem Instance</h3>
+            <div class="field">
+              <label class="label">Problem ID</label>
+              <div class="control">
+                <input class="input" type="text" id="problemId" readonly>
+              </div>
+            </div>
+            <div class="field">
+              <label class="label">Problem Statement</label>
+              <div class="control">
+                <textarea class="textarea" id="problemStatement" readonly rows="6" style="background-color: #f5f5f5;"></textarea>
+              </div>
+            </div>
+            
+            <!-- Guess Form -->
+            <div class="field is-grouped" style="margin-top: 1.5rem;">
+              <div class="field-body">
+                <div class="field">
+                  <label class="label">Your Guess: Total Tokens</label>
+                  <div class="control">
+                    <input class="input" type="number" id="guessTokens" placeholder="Enter total tokens" min="0" step="5000">
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">Your Guess: Total Cost ($)</label>
+                  <div class="control">
+                    <input class="input" type="number" id="guessCost" placeholder="Enter cost in dollars" min="0" step="0.01">
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="field is-grouped">
+              <div class="control">
+                <button class="button is-primary" id="submitGuess">Submit Guess</button>
+              </div>
+              <div class="control">
+                <button class="button is-light" id="newProblem">New Problem</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Results Display -->
+          <div id="resultsDisplay" style="display: none;">
+            <h3 class="title is-5">Your Results</h3>
+            
+            <!-- User Statistics -->
+            <div class="box" style="background-color: #f5f5f5; margin-bottom: 1.5rem;">
+              <div class="columns">
+                <div class="column">
+                  <p class="heading">Previous Guesses</p>
+                  <p class="title is-4" id="previousGuessesCount">-</p>
+                </div>
+                <div class="column">
+                  <p class="heading">Your Accuracy Rank</p>
+                  <p class="title is-4" id="userPercentile">-</p>
+                </div>
+                <div class="column">
+                  <p class="heading">Your Guess</p>
+                  <p class="title is-6" id="userGuessSummary">-</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="notification" id="guessComparison"></div>
+            
+            <!-- AI Predictions Comparison -->
+            <h4 class="title is-5" style="margin-top: 2rem;">AI Model Predictions vs. Actual</h4>
+            <div class="table-container" style="overflow-x: auto; margin-bottom: 1.5rem;">
+              <table class="table is-striped is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Model</th>
+                    <th>Predicted Tokens</th>
+                    <th>Predicted Cost ($)</th>
+                    <th>Actual Tokens</th>
+                    <th>Actual Cost ($)</th>
+                    <th>Error %</th>
+                  </tr>
+                </thead>
+                <tbody id="aiPredictionsTableBody">
+                </tbody>
+              </table>
+            </div>
+            
+            <!-- Actual Results Table -->
+            <h4 class="title is-5">Actual Results by Model</h4>
+            <div class="table-container" style="overflow-x: auto;">
+              <table class="table is-striped is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Model</th>
+                    <th>Input Tokens</th>
+                    <th>Output Tokens</th>
+                    <th>Total Tokens</th>
+                    <th>Rounds</th>
+                    <th>Cost ($)</th>
+                  </tr>
+                </thead>
+                <tbody id="resultsTableBody">
+                </tbody>
+              </table>
+            </div>
+            
+            <div class="field is-grouped" style="margin-top: 1rem;">
+              <div class="control">
+                <button class="button is-primary" id="tryAnother">Try Another Problem</button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Initial State -->
+          <div id="initialState">
+            <p class="has-text-centered">Click the button below to start guessing!</p>
+            <div class="field has-text-centered" style="margin-top: 1rem;">
+              <div class="control">
+                <button class="button is-primary is-large" id="startGame">Start Guessing Game</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              <a href="index.html">← Back to Main Page</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

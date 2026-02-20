@@ -621,6 +621,71 @@ async function saveGuessToGoogleSheets(guess) {
     return await response.text();
 }
 
+// Update leaderboard
+function updateLeaderboard() {
+    const leaderboardBody = document.getElementById('leaderboardTableBody');
+    if (!leaderboardBody) {
+        return; // Not on the leaderboard page
+    }
+    
+    const storedGuesses = JSON.parse(localStorage.getItem('tokenGuesses') || '[]');
+    
+    if (storedGuesses.length === 0) {
+        leaderboardBody.innerHTML = `
+            <tr>
+                <td colspan="9" class="has-text-centered">
+                    <p class="is-size-6">No guesses yet. <a href="game.html" target="_blank">Play the game</a> to see your predictions here!</p>
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
+    // Calculate errors for each guess and sort by combined error (ascending = best first)
+    const guessesWithErrors = storedGuesses.map(guess => {
+        const tokenError = guess.actualAvgTokens > 0 
+            ? (Math.abs(guess.guessTokens - guess.actualAvgTokens) / guess.actualAvgTokens) * 100 
+            : 100;
+        const costError = guess.actualAvgCost > 0 
+            ? (Math.abs(guess.guessCost - guess.actualAvgCost) / guess.actualAvgCost) * 100 
+            : 100;
+        const combinedError = (tokenError + costError) / 2;
+        
+        return {
+            ...guess,
+            tokenError: parseFloat(tokenError.toFixed(2)),
+            costError: parseFloat(costError.toFixed(2)),
+            combinedError: parseFloat(combinedError.toFixed(2))
+        };
+    });
+    
+    // Sort by combined error (ascending)
+    guessesWithErrors.sort((a, b) => a.combinedError - b.combinedError);
+    
+    // Take top 50
+    const topGuesses = guessesWithErrors.slice(0, 50);
+    
+    leaderboardBody.innerHTML = topGuesses.map((guess, index) => {
+        const rank = index + 1;
+        const rankClass = rank <= 3 ? 'has-text-weight-bold' : '';
+        const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : '';
+        
+        return `
+            <tr>
+                <td class="${rankClass}">${medal} ${rank}</td>
+                <td>${guess.problemId || 'N/A'}</td>
+                <td>${guess.guessTokens ? guess.guessTokens.toLocaleString() : 'N/A'}</td>
+                <td>${guess.actualAvgTokens ? guess.actualAvgTokens.toLocaleString() : 'N/A'}</td>
+                <td>$${guess.guessCost ? guess.guessCost.toFixed(4) : 'N/A'}</td>
+                <td>$${guess.actualAvgCost ? guess.actualAvgCost.toFixed(4) : 'N/A'}</td>
+                <td>${guess.tokenError.toFixed(2)}%</td>
+                <td>${guess.costError.toFixed(2)}%</td>
+                <td class="${rankClass}"><strong>${guess.combinedError.toFixed(2)}%</strong></td>
+            </tr>
+        `;
+    }).join('');
+}
+
 // Initialize guessing game
 function initGuessingGame() {
     // Check if elements exist
@@ -716,7 +781,29 @@ $(document).ready(function() {
     // Setup video autoplay for carousel
     setupVideoCarouselAutoplay();
     
-    // Initialize guessing game
+    // Initialize guessing game (only if on game page)
     initGuessingGame();
+    
+    // Update leaderboard (only if on main page)
+    updateLeaderboard();
+    
+    // Listen for storage changes to update leaderboard when guesses are made in another tab/window
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'tokenGuesses') {
+            updateLeaderboard();
+        }
+    });
+    
+    // Update leaderboard when page becomes visible (user returns from game page)
+    document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+            updateLeaderboard();
+        }
+    });
+    
+    // Also update on focus (when user switches back to this tab)
+    window.addEventListener('focus', () => {
+        updateLeaderboard();
+    });
 
 })

@@ -17,10 +17,9 @@
   <meta property="og:site_name" content="Token Consumption Analysis Research">
   <meta property="og:title" content="How Do Coding Agents Spend Your Money? Analyzing and Predicting Token Consumptions in Agentic Coding Tasks">
   <meta property="og:description" content="First empirical analysis of agent token consumption patterns using agent trajectories. We explore predicting token costs before task execution and find input tokens dominate costs in agentic coding.">
-  <!-- TODO: Replace with your actual website URL -->
-  <meta property="og:url" content="https://YOUR_DOMAIN.com/YOUR_PROJECT_PAGE">
+  <meta property="og:url" content="https://longjubai.github.io/Coding_agent_token_consumption/">
   <!-- TODO: Create a 1200x630px preview image and update path -->
-  <meta property="og:image" content="https://YOUR_DOMAIN.com/static/images/social_preview.png">
+  <meta property="og:image" content="https://longjubai.github.io/Coding_agent_token_consumption/static/images/social_preview.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="PAPER_TITLE - Research Preview">
@@ -35,7 +34,7 @@
   <meta name="twitter:title" content="How Do Coding Agents Spend Your Money? Analyzing and Predicting Token Consumptions in Agentic Coding Tasks">
   <meta name="twitter:description" content="First empirical analysis of agent token consumption patterns using agent trajectories. We explore predicting token costs before task execution and find input tokens dominate costs in agentic coding.">
   <!-- TODO: Same as social preview image above -->
-  <meta name="twitter:image" content="https://YOUR_DOMAIN.com/static/images/social_preview.png">
+  <meta name="twitter:image" content="https://longjubai.github.io/Coding_agent_token_consumption/static/images/social_preview.png">
   <meta name="twitter:image:alt" content="PAPER_TITLE - Research Preview">
 
   <!-- Academic/Research Specific -->
@@ -111,15 +110,15 @@
       "@type": "Organization",
       "name": "COLM 2026"
     },
-    "url": "https://YOUR_DOMAIN.com/YOUR_PROJECT_PAGE",
-    "image": "https://YOUR_DOMAIN.com/static/images/social_preview.png",
+    "url": "https://longjubai.github.io/Coding_agent_token_consumption/",
+    "image": "https://longjubai.github.io/Coding_agent_token_consumption/static/images/social_preview.png",
     "keywords": ["AI agents", "coding agents", "token consumption", "LLM agents", "cost prediction", "agentic coding", "SWE-bench", "OpenHands"],
     "abstract": "AI agents offer substantial opportunities to increase human productivity across many tasks. However, their use in complex workflows also drives rapid growth in LLM token consumption. When agents are deployed on tasks that can require millions of tokens, two questions naturally arise: how do agents consume LLM tokens, and can we predict token usage before task execution? In this paper, we use the OpenHands coding agent as a case study and present the first empirical analysis of agent token consumption patterns using agent trajectories. We further explore the possibility of predicting token costs before task execution. We find that (1) Agent token consumption has inherent randomness even when executing the same tasks; (2) Unlike chat and reasoning tasks, input tokens dominate overall consumption and cost, even with token caching; (3) Predicting output-token amounts and the range of total consumption can achieve weak-to-moderate correlation, offering limited but nontrivial predictive signal. Surprisingly, we also find that (4) Higher token usage does not lead to higher accuracy, as tasks and runs that cost more tokens are usually associated with lower accuracy. We believe our study provides new and useful insights that can impact decisions around token consumptions for the growing number of AI agentic tasks.",
     "isAccessibleForFree": true,
     "license": "https://creativecommons.org/licenses/by/4.0/",
     "mainEntity": {
       "@type": "WebPage",
-      "@id": "https://YOUR_DOMAIN.com/YOUR_PROJECT_PAGE"
+      "@id": "https://longjubai.github.io/Coding_agent_token_consumption/"
     },
     "about": [
       {
@@ -141,7 +140,7 @@
     "@type": "Organization",
     "name": "Token Consumption Analysis Research",
     "url": "https://YOUR_INSTITUTION_WEBSITE.com",
-    "logo": "https://YOUR_DOMAIN.com/static/images/favicon.ico"
+    "logo": "https://longjubai.github.io/Coding_agent_token_consumption/static/images/favicon.ico"
   }
   </script>
 </head>
@@ -196,7 +195,7 @@
                     
                       <!-- Code -->
                       <span class="link-block">
-                        <a href="https://github.com/LongjuBai/Coding_agent_token_consumption_analysis" target="_blank"
+                        <a href="#" onclick="alert('Code will be released after publication.'); return false;"
                            class="external-link button is-normal is-rounded is-dark">
                           <span class="icon">
                             <i class="fab fa-github"></i>
@@ -207,7 +206,7 @@
                     
                       <!-- Dataset -->
                       <span class="link-block">
-                        <a href="https://huggingface.co/datasets/<YOUR_DATASET_ID>" target="_blank"
+                        <a href="#" onclick="alert('Dataset will be released after publication.'); return false;"
                            class="external-link button is-normal is-rounded is-dark">
                           <span class="icon">
                             <i class="fas fa-database"></i>
@@ -428,128 +427,50 @@
     <h2 class="title is-3 has-text-centered">Can You Guess the Token Cost?</h2>
     <p class="subtitle has-text-centered">Test your intuition about agent token consumption</p>
     
-    <div class="box" id="guessingGameContainer">
-      <!-- Problem Display -->
-      <div id="problemDisplay" style="display: none;">
-        <h3 class="title is-5">Problem Instance</h3>
-        <div class="field">
-          <label class="label">Problem ID</label>
-          <div class="control">
-            <input class="input" type="text" id="problemId" readonly>
-          </div>
-        </div>
-        <div class="field">
-          <label class="label">Problem Statement</label>
-          <div class="control">
-            <textarea class="textarea" id="problemStatement" readonly rows="6" style="background-color: #f5f5f5;"></textarea>
-          </div>
-        </div>
-        
-        <!-- Guess Form -->
-        <div class="field is-grouped" style="margin-top: 1.5rem;">
-          <div class="field-body">
-            <div class="field">
-              <label class="label">Your Guess: Total Tokens</label>
-              <div class="control">
-                <input class="input" type="number" id="guessTokens" placeholder="Enter total tokens" min="0" step="5000">
-              </div>
-            </div>
-            <div class="field">
-              <label class="label">Your Guess: Total Cost ($)</label>
-              <div class="control">
-                <input class="input" type="number" id="guessCost" placeholder="Enter cost in dollars" min="0" step="0.01">
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div class="field is-grouped">
-          <div class="control">
-            <button class="button is-primary" id="submitGuess">Submit Guess</button>
-          </div>
-          <div class="control">
-            <button class="button is-light" id="newProblem">New Problem</button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Results Display -->
-      <div id="resultsDisplay" style="display: none;">
-        <h3 class="title is-5">Your Results</h3>
-        
-        <!-- User Statistics -->
-        <div class="box" style="background-color: #f5f5f5; margin-bottom: 1.5rem;">
-          <div class="columns">
-            <div class="column">
-              <p class="heading">Previous Guesses</p>
-              <p class="title is-4" id="previousGuessesCount">-</p>
-            </div>
-            <div class="column">
-              <p class="heading">Your Accuracy Rank</p>
-              <p class="title is-4" id="userPercentile">-</p>
-            </div>
-            <div class="column">
-              <p class="heading">Your Guess</p>
-              <p class="title is-6" id="userGuessSummary">-</p>
-            </div>
-          </div>
-        </div>
-        
-        <div class="notification" id="guessComparison"></div>
-        
-        <!-- AI Predictions Comparison -->
-        <h4 class="title is-5" style="margin-top: 2rem;">AI Model Predictions vs. Actual</h4>
-        <div class="table-container" style="overflow-x: auto; margin-bottom: 1.5rem;">
-          <table class="table is-striped is-fullwidth">
-            <thead>
-              <tr>
-                <th>Model</th>
-                <th>Predicted Tokens</th>
-                <th>Predicted Cost ($)</th>
-                <th>Actual Tokens</th>
-                <th>Actual Cost ($)</th>
-                <th>Error %</th>
-              </tr>
-            </thead>
-            <tbody id="aiPredictionsTableBody">
-            </tbody>
-          </table>
-        </div>
-        
-        <!-- Actual Results Table -->
-        <h4 class="title is-5">Actual Results by Model</h4>
-        <div class="table-container" style="overflow-x: auto;">
-          <table class="table is-striped is-fullwidth">
-            <thead>
-              <tr>
-                <th>Model</th>
-                <th>Input Tokens</th>
-                <th>Output Tokens</th>
-                <th>Total Tokens</th>
-                <th>Rounds</th>
-                <th>Cost ($)</th>
-              </tr>
-            </thead>
-            <tbody id="resultsTableBody">
-            </tbody>
-          </table>
-        </div>
-        
-        <div class="field is-grouped" style="margin-top: 1rem;">
-          <div class="control">
-            <button class="button is-primary" id="tryAnother">Try Another Problem</button>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Initial State -->
-      <div id="initialState">
-        <p class="has-text-centered">Click the button below to start guessing!</p>
-        <div class="field has-text-centered" style="margin-top: 1rem;">
-          <div class="control">
-            <button class="button is-primary is-large" id="startGame">Start Guessing Game</button>
-          </div>
-        </div>
+    <div class="box has-text-centered">
+      <p class="is-size-5" style="margin-bottom: 1.5rem;">
+        Challenge yourself to predict token consumption and costs for real coding agent tasks!
+      </p>
+      <a href="game.html" target="_blank" class="button is-primary is-large">
+        <span>Play the Guessing Game</span>
+        <span class="icon">
+          <i class="fas fa-external-link-alt"></i>
+        </span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Leaderboard -->
+<section class="section" id="Leaderboard">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3 has-text-centered">Leaderboard</h2>
+    <p class="subtitle has-text-centered">Most Accurate Human Predictions</p>
+    
+    <div class="box">
+      <div class="table-container" style="overflow-x: auto;">
+        <table class="table is-striped is-fullwidth is-hoverable">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Problem ID</th>
+              <th>Guessed Tokens</th>
+              <th>Actual Tokens</th>
+              <th>Guessed Cost ($)</th>
+              <th>Actual Cost ($)</th>
+              <th>Token Error %</th>
+              <th>Cost Error %</th>
+              <th>Combined Error %</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardTableBody">
+            <tr>
+              <td colspan="9" class="has-text-centered">
+                <p class="is-size-6">No guesses yet. <a href="game.html" target="_blank">Play the game</a> to see your predictions here!</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
