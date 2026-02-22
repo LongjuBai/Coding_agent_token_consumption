@@ -320,6 +320,11 @@ function getRandomProblem() {
     return csvData[randomIndex];
 }
 
+function parseNumber(value) {
+    const num = Number.parseFloat(value);
+    return Number.isFinite(num) ? num : 0;
+}
+
 // Calculate total tokens and cost for a model
 function getModelStats(problem, modelPrefix) {
     const inputKey = `${modelPrefix}_avg_input_token`;
@@ -327,10 +332,10 @@ function getModelStats(problem, modelPrefix) {
     const costKey = `${modelPrefix}_cost`;
     const roundsKey = `${modelPrefix}_avg_rounds`;
     
-    const input = parseFloat(problem[inputKey]) || 0;
-    const output = parseFloat(problem[outputKey]) || 0;
-    const cost = parseFloat(problem[costKey]) || 0;
-    const rounds = parseFloat(problem[roundsKey]) || 0;
+    const input = parseNumber(problem[inputKey]);
+    const output = parseNumber(problem[outputKey]);
+    const cost = parseNumber(problem[costKey]);
+    const rounds = parseNumber(problem[roundsKey]);
     
     return {
         input,
@@ -344,14 +349,14 @@ function getModelStats(problem, modelPrefix) {
 // Get all model stats
 function getAllModelStats(problem) {
     const models = [
-        { prefix: 'gpt5', name: 'GPT-5' },
-        { prefix: 'gpt5.2', name: 'GPT-5.2' },
-        { prefix: 'qwen', name: 'Qwen3-Coder' },
-        { prefix: 'gemini', name: 'Gemini 3' },
-        { prefix: 'kimi', name: 'Kimi K2' },
         { prefix: 'sonnet3-7', name: 'Sonnet 3.7' },
         { prefix: 'sonnet4', name: 'Sonnet 4' },
-        { prefix: 'sonnet4-5', name: 'Sonnet 4.5' }
+        { prefix: 'sonnet4-5', name: 'Sonnet 4.5' },
+        { prefix: 'gpt5', name: 'GPT-5' },
+        { prefix: 'gpt5.2', name: 'GPT-5.2' },
+        { prefix: 'gemini', name: 'Gemini 3' },
+        { prefix: 'qwen', name: 'Qwen3-Coder' },
+        { prefix: 'kimi', name: 'Kimi K2' }
     ];
     
     return models.map(model => ({
@@ -371,6 +376,10 @@ function displayProblem(problem) {
     document.getElementById('initialState').style.display = 'none';
     document.getElementById('problemDisplay').style.display = 'block';
     document.getElementById('resultsDisplay').style.display = 'none';
+    const actualResultsSection = document.getElementById('actualResultsSection');
+    if (actualResultsSection) {
+        actualResultsSection.style.display = 'block';
+    }
 }
 
 // Get AI predictions for a problem
@@ -389,13 +398,22 @@ function getAIPredictions(problemId) {
             actualCostKey: 'claude37sonnet_gt_task_cost_avg'
         },
         {
-            name: 'Gemini 3',
-            predInputKey: 'gemini3_predicted_avg_input',
-            predOutputKey: 'gemini3_predicted_avg_output',
-            predCostKey: 'gemini3_predicted_avg_cost',
-            actualInputKey: 'gemini3_gt_input_token_avg',
-            actualOutputKey: 'gemini3_gt_output_token_avg',
-            actualCostKey: 'gemini3_gt_task_cost_avg'
+            name: 'Sonnet 4',
+            predInputKey: 'sonnet4base_predicted_avg_input',
+            predOutputKey: 'sonnet4base_predicted_avg_output',
+            predCostKey: 'sonnet4base_predicted_avg_cost',
+            actualInputKey: 'sonnet4base_gt_input_token_avg',
+            actualOutputKey: 'sonnet4base_gt_output_token_avg',
+            actualCostKey: 'sonnet4base_gt_task_cost_avg'
+        },
+        {
+            name: 'Sonnet 4.5',
+            predInputKey: 'sonnet45_predicted_avg_input',
+            predOutputKey: 'sonnet45_predicted_avg_output',
+            predCostKey: 'sonnet45_predicted_avg_cost',
+            actualInputKey: 'sonnet45_gt_input_token_avg',
+            actualOutputKey: 'sonnet45_gt_output_token_avg',
+            actualCostKey: 'sonnet45_gt_task_cost_avg'
         },
         {
             name: 'GPT-5',
@@ -416,13 +434,13 @@ function getAIPredictions(problemId) {
             actualCostKey: 'gpt52_gt_task_cost_avg'
         },
         {
-            name: 'Kimi K2',
-            predInputKey: 'kimik2_predicted_avg_input',
-            predOutputKey: 'kimik2_predicted_avg_output',
-            predCostKey: 'kimik2_predicted_avg_cost',
-            actualInputKey: 'kimik2_gt_input_token_avg',
-            actualOutputKey: 'kimik2_gt_output_token_avg',
-            actualCostKey: 'kimik2_gt_task_cost_avg'
+            name: 'Gemini 3',
+            predInputKey: 'gemini3_predicted_avg_input',
+            predOutputKey: 'gemini3_predicted_avg_output',
+            predCostKey: 'gemini3_predicted_avg_cost',
+            actualInputKey: 'gemini3_gt_input_token_avg',
+            actualOutputKey: 'gemini3_gt_output_token_avg',
+            actualCostKey: 'gemini3_gt_task_cost_avg'
         },
         {
             name: 'Qwen3-Coder',
@@ -434,35 +452,26 @@ function getAIPredictions(problemId) {
             actualCostKey: 'qwen3coder_gt_task_cost_avg'
         },
         {
-            name: 'Sonnet 4.5',
-            predInputKey: 'sonnet45_predicted_avg_input',
-            predOutputKey: 'sonnet45_predicted_avg_output',
-            predCostKey: 'sonnet45_predicted_avg_cost',
-            actualInputKey: 'sonnet45_gt_input_token_avg',
-            actualOutputKey: 'sonnet45_gt_output_token_avg',
-            actualCostKey: 'sonnet45_gt_task_cost_avg'
-        },
-        {
-            name: 'Sonnet 4',
-            predInputKey: 'sonnet4base_predicted_avg_input',
-            predOutputKey: 'sonnet4base_predicted_avg_output',
-            predCostKey: 'sonnet4base_predicted_avg_cost',
-            actualInputKey: 'sonnet4base_gt_input_token_avg',
-            actualOutputKey: 'sonnet4base_gt_output_token_avg',
-            actualCostKey: 'sonnet4base_gt_task_cost_avg'
+            name: 'Kimi K2',
+            predInputKey: 'kimik2_predicted_avg_input',
+            predOutputKey: 'kimik2_predicted_avg_output',
+            predCostKey: 'kimik2_predicted_avg_cost',
+            actualInputKey: 'kimik2_gt_input_token_avg',
+            actualOutputKey: 'kimik2_gt_output_token_avg',
+            actualCostKey: 'kimik2_gt_task_cost_avg'
         }
     ];
     
     return models.map(model => {
-        const predInput = parseFloat(prediction[model.predInputKey]) || 0;
-        const predOutput = parseFloat(prediction[model.predOutputKey]) || 0;
+        const predInput = parseNumber(prediction[model.predInputKey]);
+        const predOutput = parseNumber(prediction[model.predOutputKey]);
         const predTokens = predInput + predOutput;
-        const predCost = parseFloat(prediction[model.predCostKey]) || 0;
+        const predCost = parseNumber(prediction[model.predCostKey]);
         
-        const actualInput = parseFloat(prediction[model.actualInputKey]) || 0;
-        const actualOutput = parseFloat(prediction[model.actualOutputKey]) || 0;
+        const actualInput = parseNumber(prediction[model.actualInputKey]);
+        const actualOutput = parseNumber(prediction[model.actualOutputKey]);
         const actualTokens = actualInput + actualOutput;
-        const actualCost = parseFloat(prediction[model.actualCostKey]) || 0;
+        const actualCost = parseNumber(prediction[model.actualCostKey]);
         
         let tokenError = 0;
         let costError = 0;
@@ -506,15 +515,40 @@ function calculatePercentile(userError, allErrors) {
 // Display results
 function displayResults(guessTokens, guessCost) {
     const stats = getAllModelStats(currentProblem);
+    const aiPredictions = getAIPredictions(currentProblem.problem_id) || [];
     
-    // Calculate average across all models
-    const avgTotalTokens = stats.reduce((sum, m) => sum + m.total, 0) / stats.length;
-    const avgCost = stats.reduce((sum, m) => sum + m.cost, 0) / stats.length;
+    // Compute token and cost averages independently so one missing metric does not zero out the other.
+    const statsTokenValues = stats.map(m => m.total).filter(v => v > 0);
+    const statsCostValues = stats.map(m => m.cost).filter(v => v > 0);
+    const aiTokenValues = aiPredictions.map(m => m.actualTokens).filter(v => v > 0);
+    const aiCostValues = aiPredictions.map(m => m.actualCost).filter(v => v > 0);
+    
+    const tokenValues = statsTokenValues.length > 0 ? statsTokenValues : aiTokenValues;
+    const costValues = statsCostValues.length > 0 ? statsCostValues : aiCostValues;
+    
+    if (tokenValues.length === 0 && costValues.length === 0) {
+        alert('Unable to compute averages for this problem. Please try another one.');
+        return;
+    }
+    
+    const avgTotalTokens = tokenValues.length > 0
+        ? tokenValues.reduce((sum, v) => sum + v, 0) / tokenValues.length
+        : null;
+    const avgCost = costValues.length > 0
+        ? costValues.reduce((sum, v) => sum + v, 0) / costValues.length
+        : null;
     
     // Calculate user's error
-    const userTokenError = avgTotalTokens > 0 ? (Math.abs(guessTokens - avgTotalTokens) / avgTotalTokens) * 100 : 100;
-    const userCostError = avgCost > 0 ? (Math.abs(guessCost - avgCost) / avgCost) * 100 : 100;
-    const userCombinedError = (userTokenError + userCostError) / 2;
+    const userTokenError = avgTotalTokens !== null && avgTotalTokens > 0
+        ? (Math.abs(guessTokens - avgTotalTokens) / avgTotalTokens) * 100
+        : null;
+    const userCostError = avgCost !== null && avgCost > 0
+        ? (Math.abs(guessCost - avgCost) / avgCost) * 100
+        : null;
+    const userErrors = [userTokenError, userCostError].filter(v => v !== null);
+    const userCombinedError = userErrors.length > 0
+        ? userErrors.reduce((sum, v) => sum + v, 0) / userErrors.length
+        : 100;
     
     // Count previous guesses
     const previousGuesses = countPreviousGuesses(currentProblem.problem_id);
@@ -523,12 +557,19 @@ function displayResults(guessTokens, guessCost) {
     // Calculate percentile (simulate with stored guesses)
     const storedGuesses = JSON.parse(localStorage.getItem('tokenGuesses') || '[]');
     const allErrors = storedGuesses.map(g => {
-        if (g.actualAvgTokens > 0 && g.actualAvgCost > 0) {
-            const tokenErr = (Math.abs(g.guessTokens - g.actualAvgTokens) / g.actualAvgTokens) * 100;
-            const costErr = (Math.abs(g.guessCost - g.actualAvgCost) / g.actualAvgCost) * 100;
-            return (tokenErr + costErr) / 2;
+        const tokenBase = parseNumber(g.actualAvgTokens);
+        const costBase = parseNumber(g.actualAvgCost);
+        const errs = [];
+        if (tokenBase > 0) {
+            errs.push((Math.abs(g.guessTokens - tokenBase) / tokenBase) * 100);
         }
-        return 100;
+        if (costBase > 0) {
+            errs.push((Math.abs(g.guessCost - costBase) / costBase) * 100);
+        }
+        if (errs.length === 0) {
+            return 100;
+        }
+        return errs.reduce((sum, v) => sum + v, 0) / errs.length;
     });
     
     const percentile = calculatePercentile(userCombinedError, allErrors);
@@ -536,27 +577,28 @@ function displayResults(guessTokens, guessCost) {
     document.getElementById('userGuessSummary').textContent = `${guessTokens.toLocaleString()} tokens, $${guessCost.toFixed(2)}`;
     
     // Show comparison
-    const tokenDiff = Math.abs(guessTokens - avgTotalTokens);
-    const costDiff = Math.abs(guessCost - avgCost);
-    const tokenPercent = ((tokenDiff / avgTotalTokens) * 100).toFixed(1);
-    const costPercent = ((costDiff / avgCost) * 100).toFixed(1);
+    const tokenPercent = avgTotalTokens !== null && avgTotalTokens > 0
+        ? (Math.abs(guessTokens - avgTotalTokens) / avgTotalTokens) * 100
+        : null;
+    const costPercent = avgCost !== null && avgCost > 0
+        ? (Math.abs(guessCost - avgCost) / avgCost) * 100
+        : null;
     
     let comparisonClass = 'is-info';
-    if (tokenPercent < 20 && costPercent < 20) {
+    if (tokenPercent !== null && costPercent !== null && tokenPercent < 20 && costPercent < 20) {
         comparisonClass = 'is-success';
-    } else if (tokenPercent > 50 || costPercent > 50) {
+    } else if ((tokenPercent !== null && tokenPercent > 50) || (costPercent !== null && costPercent > 50)) {
         comparisonClass = 'is-warning';
     }
     
     document.getElementById('guessComparison').className = `notification ${comparisonClass}`;
     document.getElementById('guessComparison').innerHTML = `
         <strong>Your Guess vs. Average:</strong><br>
-        Tokens: ${guessTokens.toLocaleString()} (actual: ${avgTotalTokens.toLocaleString()}, difference: ${tokenPercent}%)<br>
-        Cost: $${guessCost.toFixed(2)} (actual: $${avgCost.toFixed(2)}, difference: ${costPercent}%)
+        Tokens: ${guessTokens.toLocaleString()} (actual: ${avgTotalTokens !== null ? Math.round(avgTotalTokens).toLocaleString() : 'N/A'}, difference: ${tokenPercent !== null ? tokenPercent.toFixed(1) + '%' : 'N/A'})<br>
+        Cost: $${guessCost.toFixed(2)} (actual: ${avgCost !== null ? '$' + avgCost.toFixed(2) : 'N/A'}, difference: ${costPercent !== null ? costPercent.toFixed(1) + '%' : 'N/A'})
     `;
     
     // Display AI predictions
-    const aiPredictions = getAIPredictions(currentProblem.problem_id);
     const aiTbody = document.getElementById('aiPredictionsTableBody');
     aiTbody.innerHTML = '';
     
@@ -579,29 +621,37 @@ function displayResults(guessTokens, guessCost) {
     }
     
     // Populate actual results table
+    const actualResultsSection = document.getElementById('actualResultsSection');
     const tbody = document.getElementById('resultsTableBody');
     tbody.innerHTML = '';
-    
-    stats.forEach(model => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td><strong>${model.name}</strong></td>
-            <td>${model.input.toLocaleString()}</td>
-            <td>${model.output.toLocaleString()}</td>
-            <td><strong>${model.total.toLocaleString()}</strong></td>
-            <td>${model.rounds}</td>
-            <td><strong>$${model.cost.toFixed(4)}</strong></td>
-        `;
-        tbody.appendChild(row);
-    });
+
+    if (stats.length > 0) {
+        if (actualResultsSection) {
+            actualResultsSection.style.display = 'block';
+        }
+        stats.forEach(model => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td><strong>${model.name}</strong></td>
+                <td>${model.input.toLocaleString()}</td>
+                <td>${model.output.toLocaleString()}</td>
+                <td><strong>${model.total.toLocaleString()}</strong></td>
+                <td>${model.rounds}</td>
+                <td><strong>$${model.cost.toFixed(4)}</strong></td>
+            `;
+            tbody.appendChild(row);
+        });
+    } else if (actualResultsSection) {
+        actualResultsSection.style.display = 'none';
+    }
     
     // Record guess
     recordGuess({
         problemId: currentProblem.problem_id,
         guessTokens: guessTokens,
         guessCost: guessCost,
-        actualAvgTokens: avgTotalTokens,
-        actualAvgCost: avgCost,
+        actualAvgTokens: avgTotalTokens !== null ? avgTotalTokens : 0,
+        actualAvgCost: avgCost !== null ? avgCost : 0,
         timestamp: new Date().toISOString()
     });
     
