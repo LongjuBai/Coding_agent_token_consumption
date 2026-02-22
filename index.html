@@ -60,8 +60,8 @@
   <title>How Do Coding Agents Spend Your Money? Analyzing and Predicting Token Consumptions in Agentic Coding Tasks | Academic Research</title>
   
   <!-- Favicon and App Icons -->
-  <link rel="icon" type="image/x-icon" href="static/images/favicon.ico">
-  <link rel="apple-touch-icon" href="static/images/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="static/images/favicon_new.ico">
+  <link rel="apple-touch-icon" href="static/images/favicon_new.ico">
   
   <!-- Critical CSS - Load synchronously -->
   <link rel="stylesheet" href="static/css/bulma.min.css">
@@ -140,7 +140,7 @@
     "@type": "Organization",
     "name": "Token Consumption Analysis Research",
     "url": "https://YOUR_INSTITUTION_WEBSITE.com",
-    "logo": "https://longjubai.github.io/Coding_agent_token_consumption/static/images/favicon.ico"
+    "logo": "https://longjubai.github.io/Coding_agent_token_consumption/static/images/favicon_new.ico"
   }
   </script>
 </head>
@@ -233,10 +233,10 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            AI agents have been widely adopted in daily human tasks. However, their use in complex workflows also drives rapid growth in LLM token consumption.\footnote{In this paper. we use ``token consumption'' to refer to both input and output tokens used by LLM agents} When agents are deployed on tasks that can require millions of tokens, three questions naturally arise: \textbf{(1) Where do AI Agents spend the tokens? (2) What models are more token efficient? (3) Can we predict the token usage before task execution?} In this paper, we use the OpenHands coding agent as a case study and present the first quantitative analysis of agent token consumption patterns using agent trajectories on SWE-Bench. We further explore the possibility of predicting token costs before task execution.
+            AI agents have been widely adopted in daily human tasks. However, their use in complex workflows also drives rapid growth in LLM token consumption. In this paper, we use "token consumption" to refer to both input and output tokens used by LLM agents. When agents are deployed on tasks that can require millions of tokens, three questions naturally arise: <strong>(1) Where do AI agents spend tokens? (2) Which models are more token-efficient? (3) Can we predict token usage before task execution?</strong> In this paper, we use the OpenHands coding agent as a case study and present the first quantitative analysis of agent token consumption patterns using agent trajectories on SWE-Bench. We further explore the possibility of predicting token costs before task execution.
           </p>
           <p>
-            We find that (1) Agent token consumption has inherent randomness even when executing the same tasks; (2) Unlike chat and reasoning tasks, input tokens dominate overall consumption and cost, even with token caching; (3) Predicting output-token amounts and the range of total consumption can achieve weak-to-moderate correlation, offering limited but nontrivial predictive signal. Surprisingly, we also find that (4) Higher token usage does not lead to higher accuracy, as tasks and runs that cost more tokens are usually associated with lower accuracy. We believe our study provides new and useful insights that can impact decisions around token consumptions for the growing number of AI agentic tasks.We find that (1) Agent token consumption has inherent randomness even when executing the same tasks; (2) Unlike chat and reasoning tasks, input tokens dominate overall consumption and cost, even with token caching; (3) Predicting output-token amounts and the range of total consumption can achieve weak-to-moderate correlation, offering limited but nontrivial predictive signal. Surprisingly, we also find that (4) Higher token usage does not lead to higher accuracy, as tasks and runs that cost more tokens are usually associated with lower accuracy. We believe our study provides new and useful insights that can impact decisions around token consumptions for the growing number of AI agentic tasks.
+            We find that (1) agent token consumption has inherent randomness even when executing the same tasks; (2) unlike chat and reasoning tasks, input tokens dominate overall consumption and cost, even with token caching; (3) predicting output-token amounts and the range of total consumption can achieve weak-to-moderate correlation, offering limited but nontrivial predictive signal; and (4) higher token usage does not lead to higher accuracy, as tasks and runs that cost more tokens are usually associated with lower accuracy. We believe our study provides useful insights for token budgeting decisions in the growing number of AI agentic tasks.
           </p>
         </div>
       </div>
@@ -265,7 +265,7 @@
         <div class="columns is-centered" style="margin-top: 0.75rem;">
           <div class="column is-10">
             <figure class="image">
-              <img src="static/images/fig1_task_comparison.png" alt="Token consumption comparison across different coding tasks" loading="lazy">
+              <img src="static/images/fig1.png" alt="Token consumption comparison across different coding tasks" loading="lazy">
             </figure>
             <p class="has-text-centered is-size-7" style="margin-top: 0.5rem;">
               <strong>Token consumption across different coding-related tasks.</strong>
@@ -285,7 +285,7 @@
         <div class="columns is-variable is-4 is-multiline is-centered" style="margin-top: 0.75rem;">
           <div class="column is-6">
             <figure class="image">
-              <img src="static/images/fig2a_model_cost.png" alt="Figure 2a: Average token cost across models" loading="lazy">
+              <img src="static/images/fig2a.png" alt="Figure 2a: Average token cost across models" loading="lazy">
             </figure>
           </div>
           <div class="column is-6">
@@ -310,12 +310,12 @@
         <div class="columns is-variable is-4 is-multiline is-centered" style="margin-top: 0.75rem;">
           <div class="column is-6">
             <figure class="image">
-              <img src="static/images/fig3a_accuracy_vs_cost_scatter.png" alt="Figure 3a: Accuracy vs mean prompt tokens" loading="lazy">
+              <img src="static/images/fig3a.png" alt="Figure 3a: Accuracy vs mean prompt tokens" loading="lazy">
             </figure>
           </div>
           <div class="column is-6">
             <figure class="image">
-              <img src="static/images/fig3b_accuracy_vs_cost_bins.png" alt="Figure 3b: Accuracy by within-problem cost bins" loading="lazy">
+              <img src="static/images/fig3b.png" alt="Figure 3b: Accuracy by within-problem cost bins" loading="lazy">
             </figure>
           </div>
         </div>
