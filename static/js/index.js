@@ -157,6 +157,7 @@ let csvData = [];
 let predictionsData = [];
 let currentProblem = null;
 let guesses = [];
+let guessingGameUIBound = false;
 
 // Improved CSV parser that handles multi-line fields
 function parseCSV(text) {
@@ -247,11 +248,14 @@ function parseCSVLine(line) {
 // Load CSV data
 async function loadCSVData() {
     try {
-        // Try multiple possible paths
+        // Prefer updated data files first; keep fallback names for compatibility.
         const paths = [
+            'success_subset_data_new.csv',
+            './success_subset_data_new.csv',
+            '../success_subset_data_new.csv',
             'success_subset_data.csv',
-            '../success_subset_data.csv',
-            './success_subset_data.csv'
+            './success_subset_data.csv',
+            '../success_subset_data.csv'
         ];
         
         let response = null;
@@ -273,7 +277,7 @@ async function loadCSVData() {
         console.log(`Loaded ${csvData.length} problems`);
     } catch (error) {
         console.error('Error loading CSV:', error);
-        alert('Error loading problem data. Please make sure success_subset_data.csv is accessible in the repository.');
+        alert('Error loading problem data. Please make sure success_subset_data_new.csv is accessible in the repository.');
     }
 }
 
@@ -281,9 +285,12 @@ async function loadCSVData() {
 async function loadPredictionsData() {
     try {
         const paths = [
+            'all_models_averaged_predictions_new.csv',
+            './all_models_averaged_predictions_new.csv',
+            '../all_models_averaged_predictions_new.csv',
             'all_models_averaged_predictions.csv',
-            '../all_models_averaged_predictions.csv',
-            './all_models_averaged_predictions.csv'
+            './all_models_averaged_predictions.csv',
+            '../all_models_averaged_predictions.csv'
         ];
         
         let response = null;
@@ -376,10 +383,6 @@ function displayProblem(problem) {
     document.getElementById('initialState').style.display = 'none';
     document.getElementById('problemDisplay').style.display = 'block';
     document.getElementById('resultsDisplay').style.display = 'none';
-    const actualResultsSection = document.getElementById('actualResultsSection');
-    if (actualResultsSection) {
-        actualResultsSection.style.display = 'block';
-    }
 }
 
 // Get AI predictions for a problem
@@ -620,31 +623,6 @@ function displayResults(guessTokens, guessCost) {
         aiTbody.innerHTML = '<tr><td colspan="6" class="has-text-centered">AI predictions not available for this problem</td></tr>';
     }
     
-    // Populate actual results table
-    const actualResultsSection = document.getElementById('actualResultsSection');
-    const tbody = document.getElementById('resultsTableBody');
-    tbody.innerHTML = '';
-
-    if (stats.length > 0) {
-        if (actualResultsSection) {
-            actualResultsSection.style.display = 'block';
-        }
-        stats.forEach(model => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td><strong>${model.name}</strong></td>
-                <td>${model.input.toLocaleString()}</td>
-                <td>${model.output.toLocaleString()}</td>
-                <td><strong>${model.total.toLocaleString()}</strong></td>
-                <td>${model.rounds}</td>
-                <td><strong>$${model.cost.toFixed(4)}</strong></td>
-            `;
-            tbody.appendChild(row);
-        });
-    } else if (actualResultsSection) {
-        actualResultsSection.style.display = 'none';
-    }
-    
     // Record guess
     recordGuess({
         problemId: currentProblem.problem_id,
@@ -809,6 +787,11 @@ function initGuessingGame() {
         console.log('Start game button not found - not on game page');
         return;
     }
+    if (guessingGameUIBound) {
+        console.log('Guessing game handlers already bound, skipping duplicate init');
+        return;
+    }
+    guessingGameUIBound = true;
     
     console.log('Start game button found, attaching event listener');
     
