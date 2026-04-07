@@ -174,7 +174,7 @@
             <div class="is-size-5 publication-authors">
               <span class="author-block">
                 University of Michigan · Stanford University · AllHands AI · Google DeepMind · MIT<br>
-                Preprint · February 2026
+                Preprint · April 2026
               </span>
             </div>
             
@@ -247,10 +247,27 @@
         <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
           <p>
-            AI agents have been widely adopted in daily human tasks. However, their use in complex workflows also drives rapid growth in LLM token consumption. In this paper, we use "token consumption" to refer to both input and output tokens used by LLM agents. When agents are deployed on tasks that can require millions of tokens, three questions naturally arise: <strong>(1) Where do AI agents spend tokens? (2) Which models are more token-efficient? (3) Can we predict token usage before task execution?</strong> In this paper, we use the OpenHands coding agent as a case study and present the first quantitative analysis of agent token consumption patterns using agent trajectories on SWE-Bench. We further explore the possibility of predicting token costs before task execution.
+            Wide adoption of AI agents in complex human workflows drives rapid growth of LLM token consumption. We use
+            "token consumption" to refer to both input and output tokens used by LLM agents. When agents are deployed on
+            tasks that can require a large amount of tokens, three questions naturally arise: <strong>(1) Where do AI
+            Agents spend the tokens? (2) What models are more token efficient? (3) Can LLMs anticipate the token usage
+            before task execution?</strong>
           </p>
           <p>
-            We find that (1) agent token consumption has inherent randomness even when executing the same tasks; (2) unlike chat and reasoning tasks, input tokens dominate overall consumption and cost, even with token caching; (3) predicting output-token amounts and the range of total consumption can achieve weak-to-moderate correlation, offering limited but nontrivial predictive signal; and (4) higher token usage does not lead to higher accuracy, as tasks and runs that cost more tokens are usually associated with lower accuracy. We believe our study provides useful insights for token budgeting decisions in the growing number of AI agentic tasks.
+            In this paper, we present the first quantitative study of token consumption patterns in agentic coding. We
+            analyze trajectories from <strong>eight frontier LLMs</strong> on a widely used coding benchmark (SWE-Bench)
+            and evaluate models' ability to predict their own token costs <em>before</em> task execution. We find that:
+            <strong>(1)</strong> agentic tasks are uniquely expensive: they consume substantially more tokens and are
+            correspondingly more expensive than code reasoning and code chat, with input tokens being the key driver of
+            the overall cost, instead of output tokens. <strong>(2)</strong> Token usage is <strong>highly variable</strong>
+            and inherently stochastic: runs on the same task can differ by up to <strong>30&times;</strong> in total
+            tokens, and higher token usage does <strong>not</strong> translate to higher accuracy; instead, accuracy often
+            peaks at intermediate cost and degrades at higher cost. <strong>(3)</strong> Model-to-model token efficiency is
+            governed more by <strong>model differences</strong> than by human-labeled task difficulty, and difficulty
+            labels only weakly align with actual resource expenditure. <strong>(4)</strong> Finally, frontier models
+            <strong>fail to accurately predict</strong> their token usage (with weak-to-moderate correlations, up to 0.39),
+            and systematically underestimate the real token costs. Our study reveals important insights regarding the
+            economics of AI agents and can inspire new studies in this direction.
           </p>
         </div>
       </div>
@@ -358,6 +375,30 @@
       </div>
 
       <div class="box">
+        <h3 class="title is-5">Backbone models follow distinct token-use patterns</h3>
+        <p>
+          Token usage varies substantially across backbone models, reflecting different problem-solving strategies and
+          interaction patterns.
+        </p>
+
+        <div class="columns is-variable is-4 is-multiline is-centered" style="margin-top: 0.75rem;">
+          <div class="column is-12-mobile is-6-desktop">
+            <figure class="image">
+              <img src="static/images/sec4_success_subset_token_deviation_box.png" alt="Backbone model variation in token deviation on the success subset" loading="lazy" class="equal-height-plot">
+            </figure>
+          </div>
+          <div class="column is-12-mobile is-6-desktop">
+            <figure class="image">
+              <img src="static/images/sec4_token_vs_accuracy_scatter.png" alt="Backbone model variation in token usage and accuracy" loading="lazy" class="equal-height-plot">
+            </figure>
+          </div>
+        </div>
+        <p class="has-text-centered is-size-7">
+          <strong>Different backbones show distinct token-consumption profiles and usage-performance tradeoffs.</strong>
+        </p>
+      </div>
+
+      <div class="box">
         <h3 class="title is-5">6) Where tokens go across phases</h3>
         <p>
           This case study is conducted with <strong>Claude Sonnet 4.5</strong>. Across phases, context reuse grows steadily. Early costs
@@ -368,17 +409,17 @@
         <div class="columns is-variable is-4 is-multiline is-centered" style="margin-top: 0.75rem;">
           <div class="column is-4">
             <figure class="image">
-              <img src="static/images/fig6a_new.png" alt="Figure 6a: Phase-level token volume by type" loading="lazy">
+              <img src="static/images/token_count_plot.png" alt="Figure 6a: Phase-level token volume by type" loading="lazy">
             </figure>
           </div>
           <div class="column is-4">
             <figure class="image">
-              <img src="static/images/fig6b_new.png" alt="Figure 6b: Phase-level cost by token type" loading="lazy">
+              <img src="static/images/token_cost_plot.png" alt="Figure 6b: Phase-level cost by token type" loading="lazy">
             </figure>
           </div>
           <div class="column is-4">
             <figure class="image">
-              <img src="static/images/fig6c_new.png" alt="Figure 6c: Correlation between token types and total cost" loading="lazy">
+              <img src="static/images/cache_correlation_plot.png" alt="Figure 6c: Correlation between token types and total cost" loading="lazy">
             </figure>
           </div>
         </div>
@@ -405,6 +446,30 @@
             </p>
           </div>
         </div>
+      </div>
+
+      <div class="box">
+        <h3 class="title is-5">Self-prediction is systematically biased downward</h3>
+        <p>
+          Across models, self-predictions consistently underestimate true token usage. The bias is strongest for input
+          tokens, while output-token predictions track the diagonal more closely but still undershoot higher-cost cases.
+        </p>
+
+        <div class="columns is-variable is-4 is-multiline is-centered" style="margin-top: 0.75rem;">
+          <div class="column is-12-mobile is-6-desktop">
+            <figure class="image">
+              <img src="static/images/unified_model_input_over_under_scatter.png" alt="Input-token self-prediction versus actual values across models" loading="lazy" class="equal-height-plot">
+            </figure>
+          </div>
+          <div class="column is-12-mobile is-6-desktop">
+            <figure class="image">
+              <img src="static/images/unified_model_output_over_under_scatter.png" alt="Output-token self-prediction versus actual values across models" loading="lazy" class="equal-height-plot">
+            </figure>
+          </div>
+        </div>
+        <p class="has-text-centered is-size-7">
+          <strong>Self-prediction shows a consistent downward bias, especially for input-token estimates.</strong>
+        </p>
       </div>
 
     </div>
