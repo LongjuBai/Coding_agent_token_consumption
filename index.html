@@ -353,7 +353,7 @@
       </div>
 
       <div class="box">
-        <h3 class="title is-5">5) Human difficulty ≠ model cost</h3>
+        <h3 class="title is-5">4) Human difficulty ≠ model cost</h3>
         <p>
           While harder tasks tend to consume more resources on average, many “easy” tasks can still be expensive, and many “hard”
           tasks can be solved cheaply. Notably, <strong>11.51%</strong> of tasks labeled as "&lt;15-minute" required more total
@@ -375,10 +375,13 @@
       </div>
 
       <div class="box">
-        <h3 class="title is-5">Backbone models follow distinct token-use patterns</h3>
+        <h3 class="title is-5">5) Backbone models follow distinct token-use patterns</h3>
         <p>
           Token usage varies substantially across backbone models, reflecting different problem-solving strategies and
-          interaction patterns.
+          interaction patterns. Some models are consistently more verbose and exploratory, while others reach similar
+          outcomes with shorter trajectories and lower overhead. These differences persist even on the same benchmark,
+          suggesting that token efficiency depends not only on task difficulty but also on how each model allocates
+          context, tool use, and generation.
         </p>
 
         <div class="columns is-variable is-4 is-multiline is-centered" style="margin-top: 0.75rem;">
@@ -449,7 +452,7 @@
       </div>
 
       <div class="box">
-        <h3 class="title is-5">Self-prediction is systematically biased downward</h3>
+        <h3 class="title is-5">8) Self-prediction is systematically biased downward</h3>
         <p>
           Across models, self-predictions consistently underestimate true token usage. The bias is strongest for input
           tokens, while output-token predictions track the diagonal more closely but still undershoot higher-cost cases.
