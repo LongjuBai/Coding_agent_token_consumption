@@ -378,7 +378,7 @@
       <div class="box">
         <h3 class="title is-5">5) Backbone models follow distinct token-use patterns</h3>
         <p>
-          Token efficiency varies substantially across models and reflects model-specific behavior. GPT-5 and GPT-5.2 achieve strong accuracy at low cost, while Kimi-K2 stands out with the highest cost yet lowest accuracy. The relative ranking of token usage persists across both shared success and shared failure subsets, indicating that token efficiency is an inherent characteristic of the model rather than a property of the task.
+          Token efficiency varies substantially across models and reflects model-specific behavior rather than task difficulty. (a) GPT-5 and GPT-5.2 achieve strong accuracy at low cost, while Kimi-K2 stands out with the highest token usage yet lowest accuracy. (b) The relative ranking of token usage across models stays consistent on both the shared success (n=230) and shared failure (n=100) subsets, indicating that token efficiency is an inherent characteristic of the model rather than a property of the task.
         </p>
 
         <div class="columns is-variable is-4 is-multiline is-centered" style="margin-top: 0.75rem;">
@@ -390,13 +390,6 @@
           <div class="column is-12-mobile is-6-desktop">
             <figure class="image">
               <img src="static/images_new/sec4_success_fail_dumbbell.png" alt="Success and failure dumbbell plot across models" loading="lazy" class="equal-height-plot">
-            </figure>
-          </div>
-        </div>
-        <div class="columns is-centered" style="margin-top: 0.5rem;">
-          <div class="column is-10">
-            <figure class="image">
-              <img src="static/images_new/sec4_success_subset_action_overall_vs_repeated_combined.png" alt="Success subset action overall vs repeated combined" loading="lazy" style="width:100%; height:auto; display:block;">
             </figure>
           </div>
         </div>
