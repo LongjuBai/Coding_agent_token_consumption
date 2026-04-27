@@ -298,7 +298,7 @@
         <div class="columns is-centered" style="margin-top: 0.75rem;">
           <div class="column is-10">
             <figure class="image">
-              <img src="static/images/token_usage_comparison.png" alt="Token consumption comparison across different coding tasks" loading="lazy">
+              <img src="static/images_new/token_usage_comparison.png" alt="Token consumption comparison across different coding tasks" loading="lazy">
             </figure>
             <p class="has-text-centered is-size-7" style="margin-top: 0.5rem;">
               <strong>Token consumption across different coding-related tasks.</strong>
@@ -310,15 +310,19 @@
       <div class="box">
         <h3 class="title is-5">2) Token usage is highly variable</h3>
         <p>
-          Costs differ substantially across backbone models, and token usage can vary dramatically across runs of the same task.
-          Model ordering remains similar on a success-only subset, while absolute costs are lower than the full set.
+          Across 500 SWE-bench tasks, the mostexpensive instance consumes ~7M more tokens than the cheapest, with high-cost problems showing the largest cross-run variance. Even on the same problem, the most expensive run costs roughly 2× the cheapest across all models, making upfront cost prediction fundamentally difficult.
         </p>
 
         <!-- Figure 2 -->
-        <div class="columns is-centered" style="margin-top: 0.75rem;">
-          <div class="column is-11">
+        <div class="columns is-variable is-4 is-multiline is-centered" style="margin-top: 0.75rem;">
+          <div class="column is-12-mobile is-6-desktop">
             <figure class="image">
-              <img src="static/images/fig2_new.png" alt="Figure 2: Model-dependent cost differences and variability across problems and runs" loading="lazy" style="display:block; width:100%; height:auto; margin:0 auto;">
+              <img src="static/images_new/multi_model_variance_plot.png" alt="Multi-model variance plot across SWE-bench tasks" loading="lazy" class="equal-height-plot">
+            </figure>
+          </div>
+          <div class="column is-12-mobile is-6-desktop">
+            <figure class="image">
+              <img src="static/images_new/multi_model_max_min_ratio_bar_plot.png" alt="Multi-model max/min ratio bar plot" loading="lazy" class="equal-height-plot">
             </figure>
           </div>
         </div>
@@ -338,12 +342,12 @@
         <div class="columns is-variable is-4 is-multiline is-centered" style="margin-top: 0.75rem;">
           <div class="column is-12-mobile is-6-desktop">
             <figure class="image">
-              <img src="static/images/fig3a.png" alt="Figure 3a: Accuracy vs mean prompt tokens" loading="lazy" class="equal-height-plot">
+              <img src="static/images_new/multi_model_group_accuracy_total_input_tokens_plot.png" alt="Multi-model group accuracy vs total input tokens" loading="lazy" class="equal-height-plot">
             </figure>
           </div>
           <div class="column is-12-mobile is-6-desktop">
             <figure class="image">
-              <img src="static/images/fig3b_new.png" alt="Figure 3b: Accuracy by within-problem cost bins" loading="lazy" class="equal-height-plot">
+              <img src="static/images_new/multi_model_prompt_tokens_accuracy_plot.png" alt="Multi-model prompt tokens vs accuracy plot" loading="lazy" class="equal-height-plot">
             </figure>
           </div>
         </div>
@@ -353,21 +357,18 @@
       </div>
 
       <div class="box">
-        <h3 class="title is-5">4) Human difficulty ≠ model cost</h3>
+        <h3 class=”title is-5”>4) Expert-rated task difficulty is a weak predictor of agent token consumption</h3>
         <p>
-          While harder tasks tend to consume more resources on average, many “easy” tasks can still be expensive, and many “hard”
-          tasks can be solved cheaply. Notably, <strong>11.51%</strong> of tasks labeled as "&lt;15-minute" required more total
-          tokens than the average "&gt;1-hour" instance, and <strong>27.38%</strong> of "&gt;1-hour" tasks consumed fewer tokens
-          than the "&lt;15-minute" group.
+          While token usage rises with human-perceived difficulty on average, the alignment is far from linear (Kendall τ = 0.32), with substantial overlap across difficulty groups: 6.7% of “&lt;15 min” tasks exceed the “&gt;1 hr” mean, and 11.1% of “&gt;1 hr” tasks fall below the “&lt;15 min” mean. This reveals a fundamental gap between human-perceived complexity and the computational effort agents actually expend.
         </p>
 
         <!-- Figure 5 -->
-        <div class="columns is-centered" style="margin-top: 0.75rem;">
-          <div class="column is-10">
-            <figure class="image">
-              <img src="static/images/fig5.png" alt="Figure 5: Token and tool usage across difficulty levels" loading="lazy">
+        <div class=”columns is-centered” style=”margin-top: 0.75rem;”>
+          <div class=”column is-10”>
+            <figure class=”image”>
+              <img src=”static/images_new/difficulty_misalignment_figure.png” alt=”Difficulty misalignment figure” loading=”lazy”>
             </figure>
-            <p class="has-text-centered is-size-7" style="margin-top: 0.5rem;">
+            <p class=”has-text-centered is-size-7” style=”margin-top: 0.5rem;”>
               <strong>Difficulty labels only weakly align with agent resource expenditure.</strong>
             </p>
           </div>
@@ -377,22 +378,23 @@
       <div class="box">
         <h3 class="title is-5">5) Backbone models follow distinct token-use patterns</h3>
         <p>
-          Token usage varies substantially across backbone models, reflecting different problem-solving strategies and
-          interaction patterns. Some models are consistently more verbose and exploratory, while others reach similar
-          outcomes with shorter trajectories and lower overhead. These differences persist even on the same benchmark,
-          suggesting that token efficiency depends not only on task difficulty but also on how each model allocates
-          context, tool use, and generation.
+          Token efficiency varies substantially across models and reflects model-specific behavior. GPT-5 and GPT-5.2 achieve strong accuracy at low cost, while Kimi-K2 stands out with the highest cost yet lowest accuracy. The relative ranking of token usage persists across both shared success and shared failure subsets, indicating that token efficiency is an inherent characteristic of the model rather than a property of the task.
         </p>
 
         <div class="columns is-variable is-4 is-multiline is-centered" style="margin-top: 0.75rem;">
-          <div class="column is-12-mobile is-6-desktop">
+          <div class="column is-12-mobile is-4-desktop">
             <figure class="image">
-              <img src="static/images/sec4_success_subset_token_deviation_box.png" alt="Backbone model variation in token deviation on the success subset" loading="lazy" class="equal-height-plot">
+              <img src="static/images_new/sec4_token_vs_accuracy_scatter.png" alt="Token vs accuracy scatter plot across models" loading="lazy" class="equal-height-plot">
             </figure>
           </div>
-          <div class="column is-12-mobile is-6-desktop">
+          <div class="column is-12-mobile is-4-desktop">
             <figure class="image">
-              <img src="static/images/sec4_token_vs_accuracy_scatter.png" alt="Backbone model variation in token usage and accuracy" loading="lazy" class="equal-height-plot">
+              <img src="static/images_new/sec4_success_fail_dumbbell.png" alt="Success and failure dumbbell plot across models" loading="lazy" class="equal-height-plot">
+            </figure>
+          </div>
+          <div class="column is-12-mobile is-4-desktop">
+            <figure class="image">
+              <img src="static/images_new/sec4_success_subset_action_overall_vs_repeated_combined.png" alt="Success subset action overall vs repeated combined" loading="lazy" class="equal-height-plot">
             </figure>
           </div>
         </div>
@@ -404,30 +406,24 @@
       <div class="box">
         <h3 class="title is-5">6) Where tokens go across phases</h3>
         <p>
-          This case study is conducted with <strong>Claude Sonnet 4.5</strong>. Across phases, context reuse grows steadily. Early costs
-          are dominated by context construction, while later costs shift toward token-intensive generation.
+          Cache-read input tokens dominate both raw token volume and dollar cost across all five problem-solving phases, with the Fix and Explore phases incurring the highest costs. Despite output tokens being priced ~80× higher per token, the sheer volume of accumulated context makes cheap-per-token cache reads the largest cost contributor in aggregate.
         </p>
 
-        <!-- Figure 6 (three panels) -->
+        <!-- Figure 6 (two panels) -->
         <div class="columns is-variable is-4 is-multiline is-centered" style="margin-top: 0.75rem;">
-          <div class="column is-4">
+          <div class="column is-12-mobile is-6-desktop">
             <figure class="image">
-              <img src="static/images/token_count_plot.png" alt="Figure 6a: Phase-level token volume by type" loading="lazy">
+              <img src="static/images_new/token_cost_plot_phase5_balanced.png" alt="Phase-level cost by token type" loading="lazy" class="equal-height-plot">
             </figure>
           </div>
-          <div class="column is-4">
+          <div class="column is-12-mobile is-6-desktop">
             <figure class="image">
-              <img src="static/images/token_cost_plot.png" alt="Figure 6b: Phase-level cost by token type" loading="lazy">
-            </figure>
-          </div>
-          <div class="column is-4">
-            <figure class="image">
-              <img src="static/images/cache_correlation_plot.png" alt="Figure 6c: Correlation between token types and total cost" loading="lazy">
+              <img src="static/images_new/token_count_plot_phase5_balanced.png" alt="Phase-level token volume by type" loading="lazy" class="equal-height-plot">
             </figure>
           </div>
         </div>
         <p class="has-text-centered is-size-7">
-          <strong>Phase-level token usage and cost dynamics across the trajectory (Claude Sonnet 4.5 case study).</strong>
+          <strong>Phase-level token usage and cost dynamics across the trajectory.</strong>
         </p>
       </div>
 
@@ -442,7 +438,7 @@
         <div class="columns is-centered" style="margin-top: 0.75rem;">
           <div class="column is-10">
             <figure class="image">
-              <img src="static/images/fig7.png" alt="Self-prediction results showing correlations between predicted and ground-truth token counts" loading="lazy">
+              <img src="static/images_new/unified_model_self_prediction_ratio.png" alt="Self-prediction results showing correlations between predicted and ground-truth token counts" loading="lazy">
             </figure>
             <p class="has-text-centered is-size-7" style="margin-top: 0.5rem;">
               <strong>Pearson correlations between predicted and ground-truth token counts, plus relative overhead of self-prediction.</strong>
@@ -461,12 +457,12 @@
         <div class="columns is-variable is-4 is-multiline is-centered" style="margin-top: 0.75rem;">
           <div class="column is-12-mobile is-6-desktop">
             <figure class="image">
-              <img src="static/images/unified_model_input_over_under_scatter.png" alt="Input-token self-prediction versus actual values across models" loading="lazy" class="equal-height-plot">
+              <img src="static/images_new/unified_model_input_over_under_scatter.png" alt="Input-token self-prediction versus actual values across models" loading="lazy" class="equal-height-plot">
             </figure>
           </div>
           <div class="column is-12-mobile is-6-desktop">
             <figure class="image">
-              <img src="static/images/unified_model_output_over_under_scatter.png" alt="Output-token self-prediction versus actual values across models" loading="lazy" class="equal-height-plot">
+              <img src="static/images_new/unified_model_output_over_under_scatter.png" alt="Output-token self-prediction versus actual values across models" loading="lazy" class="equal-height-plot">
             </figure>
           </div>
         </div>
